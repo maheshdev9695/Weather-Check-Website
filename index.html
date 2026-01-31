@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather App</title>
+    <style>body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #74ebd5, #9face6);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.weather-container {
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+input {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px 15px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background: #45a049;
+}
+
+.result {
+    margin-top: 15px;
+    font-size: 16px;
+}
+</style>
+</head>
+<body>
+
+    <div class="weather-container">
+        <h1>Weather App</h1>
+
+        <input type="text" id="locationInput" placeholder="Enter city name">
+        <button onclick="getWeather()">Get Weather</button>
+
+        <div id="weatherResult" class="result"></div>
+    </div>
+
+    <script>function getWeather() {
+    const location = document.getElementById("locationInput").value;
+    const resultDiv = document.getElementById("weatherResult");
+
+    if (location === "") {
+        resultDiv.innerHTML = "Please enter a location";
+        return;
+    }
+
+    const apiKey = "84f80ee45f8c40208ce154149251912";
+    const apiUrl = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}&aqi=yes`;
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                resultDiv.innerHTML = "Location not found";
+            } else {
+                resultDiv.innerHTML = `
+                    <h3>${data.location.name}, ${data.location.country}</h3>
+                    <p>Temperature: ${data.current.temp_c} °C</p>
+                    <p>Condition: ${data.current.condition.text}</p>
+                `;
+            }
+        })
+        .catch(error => {
+            resultDiv.innerHTML = "Error fetching data";
+            console.error(error);
+        });
+};</script>
+</body>
+</html>
